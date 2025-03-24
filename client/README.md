@@ -1,107 +1,147 @@
-```markdown
-# SmartExam - Client
+# SmartExam React Client
 
-SmartExam là ứng dụng front-end được xây dựng bằng Vue.js cho hệ thống xếp lịch thi thông minh. Ứng dụng này tương tác với backend thông qua các API để thực hiện các chức năng như đăng nhập, nhập liệu (import file), tạo lịch thi tự động, và tra cứu lịch thi.
+SmartExam React Client là giao diện người dùng của hệ thống SmartExam, được xây dựng bằng React và Ant Design. Ứng dụng cung cấp các chức năng quản lý lịch thi cho nhiều vai trò khác nhau (Admin, Giảng viên, Sinh viên). Giao diện được thiết kế hiện đại, sử dụng phông chữ "Inter" (được import từ Google Fonts) và được dịch hoàn toàn sang tiếng Việt.
 
-## Tổng Quan
+---
 
-SmartExam (Client) được tạo bằng **Vue CLI v5.0.8** với preset **Default ([Vue 3] babel, eslint)**. Dự án được thiết kế theo kiến trúc client-server, với phần front-end (client) chịu trách nhiệm hiển thị giao diện người dùng và gửi yêu cầu đến backend.
+## Tính năng
 
-**Các tính năng chính:**
-- **Đăng nhập và phân quyền:** Người dùng (Admin, Giảng viên và Sinh viên) đăng nhập và được phân quyền truy cập dashboard phù hợp.
-- **Nhập dữ liệu:** Cho phép nhập (import) dữ liệu các đối tượng như phòng thi, thời gian thi, môn học, giảng viên, sinh viên thông qua file Excel/CSV.
-- **Tạo lịch thi tự động:** Gửi yêu cầu đến backend dùng 5 tham số (ngày bắt đầu, ngày kết thúc, thời gian bắt đầu ca thi đầu, thời gian kết thúc ca thi cuối, số giám thị) để hệ thống hiện thị bảng lịch thi đã được xử lý.
-- **Tra cứu lịch thi:** Tra cứu và hiển thị lịch thi theo tiêu chí tìm kiếm.
+- **Đăng nhập:**
+  - Hỗ trợ đăng nhập với sẵn dữ liệu cho 3 vai trò:
+    - **Admin:** username: `admin`, password: `password`
+    - **Giảng viên:** username: `teacher`, password: `password`
+    - **Sinh viên:** username: `student`, password: `password`
+  - Logo của SmartExam được hiển thị phía trên form đăng nhập.
 
-## Prerequisites
+- **Dashboard cho Admin:**
+  - Giao diện bao gồm Header (hiển thị "Phần mềm xếp lịch thi" ở bên trái, "Xin chào, admin" và nút "Đăng xuất" bên phải) và Sidebar điều hướng.
+  - Các nội dung dành cho Admin (bảng điều khiển tổng quan, tạo lịch thi, nhập dữ liệu, tra cứu lịch thi) được nhúng vào Dashboard thông qua prop `children`.
 
-- **Node.js:** Phiên bản Node ≥ 14.x
-- **npm:** Hoặc sử dụng Yarn
-- **Vue CLI:** Cài đặt toàn cục với `npm install -g @vue/cli`
+- **Giao diện Tra cứu lịch thi (Search):**
+  - Cho phép người dùng tìm kiếm lịch thi theo 3 tiêu chí: Môn học, Ngày thi và Phòng thi (sắp xếp trên 1 hàng).
+  - Hiển thị kết quả tra cứu theo 2 dạng trong 3 tab: dạng bảng (Table), lịch tháng (Calendar) và lịch tuần (WeeklyCalendar).
+  - Component WeeklyCalendar được tách riêng để hiển thị dạng lịch tuần, với 2 nút điều hướng tiến/lùi và hiển thị sự kiện kéo dài (với rowSpan) kèm thông tin thời gian (startTime - endTime GMT+7).
 
-## Cài Đặt
+- **Giao diện dành cho Giảng viên và Sinh viên:**
+  - Giao diện không có sidebar; Header hiển thị logo, tiêu đề và thông báo "Xin chào" kèm nút "Đăng xuất".
+  - Nội dung chính sử dụng Tab để hiển thị lịch thi dưới dạng bảng và lịch tuần (sử dụng WeeklyCalendar).
 
-1. **Clone Repository & Khởi Tạo Dự Án:**
+- **Các giao diện phụ khác (SchedulePage, ImportPage):**
+  - **SchedulePage:** Cho phép nhập các tham số để tạo lịch thi tự động (Ngày bắt đầu, Ngày kết thúc, Thời gian ca thi đầu tiên, Thời gian ca thi cuối cùng, Số giám thị).
+  - **ImportPage:** Hỗ trợ upload file Excel/CSV để nhập dữ liệu.
 
-    ```bash
-    git clone <repo-url>
-    cd SmartExam/client
-    ```
+---
 
-2. **Cài đặt các dependencies:**
+## Cấu trúc thư mục
 
-    ```bash
-    npm install
-    ```
-
-## Chạy Ứng Dụng
-
-Để chạy ứng dụng trên môi trường phát triển, sử dụng:
-
-```bash
-npm run serve
-```
-
-Ứng dụng sẽ chạy trên [http://localhost:8080](http://localhost:8080) và hỗ trợ hot module reloading.
-
-## Build Ứng Dụng
-
-Để build ứng dụng dùng cho production:
-
-```bash
-npm run build
-```
-
-Kết quả sẽ được tạo ra ở thư mục `dist`.
-
-## Linting & Code Style
-
-Để kiểm tra và tự động sửa lỗi định dạng:
-
-```bash
-npm run lint
-```
-
-## Cấu Hình Biến Môi Trường
-
-Bạn có thể thay đổi các biến môi trường bằng cách tạo hoặc chỉnh sửa file `.env` tại thư mục gốc của dự án client. Ví dụ, cấu hình API endpoint:
-
-```dotenv
-VUE_APP_API_URL=http://localhost:3000/api
-```
-
-## Cấu Trúc Thư Mục
+Dưới đây là sơ đồ cấu trúc thư mục của phần client:
 
 ```
 SmartExam/
-└── client/
-     ├── node_modules/
-     ├── public/
-     │   ├── index.html         # Trang HTML gốc
-     │   └── favicon.ico
-     ├── src/
-     │   ├── assets/            # Tài nguyên tĩnh (hình ảnh, CSS, fonts,...)
-     │   ├── components/        # Các component tái sử dụng (Header.vue, Footer.vue,...)
-     │   ├── views/             # Các trang giao diện (LoginPage.vue, ImportPage.vue, SchedulePage.vue, SearchPage.vue,...)
-     │   ├── router/            # Cấu hình định tuyến (router/index.js)
-     │   ├── store/             # Vuex store (nếu sử dụng)
-     │   ├── services/          # Các module gọi API tới backend (AuthService.js, ScheduleService.js,...)
-     │   ├── App.vue            # Component cấp cao nhất
-     │   └── main.js            # Entry point của ứng dụng
-     ├── .env                   # Tập tin biến môi trường (ví dụ: VUE_APP_API_URL)
-     ├── package.json           # File cấu hình dự án
-     └── vue.config.js          # Cấu hình tùy chỉnh cho Vue CLI (nếu cần)
+├── public/
+│   ├── index.html           // HTML chính, bao gồm meta viewport và link phông chữ "Inter"
+│   └── favicon.ico
+├── src/
+│   ├── assets/
+│   │   └── logo.png         // Logo của SmartExam
+│   ├── components/
+│   │   └── WeeklyCalendar.jsx   // Component hiển thị lịch tuần với nút lượt tuần
+│   ├── pages/
+│   │   ├── LoginPage.jsx         // Trang đăng nhập
+│   │   ├── DashboardPage.jsx     // Giao diện dashboard cho Admin (nhúng children từ AppRouter)
+│   │   ├── SchedulePage.jsx      // Trang tạo lịch thi tự động dành cho Admin
+│   │   ├── ImportPage.jsx        // Trang nhập dữ liệu dành cho Admin
+│   │   ├── SearchPage.jsx        // Trang tra cứu lịch thi (hiển thị dạng bảng, lịch tháng và lịch tuần)
+│   │   ├── TeacherDashboardPage.jsx  // Giao diện dashboard dành cho Giảng viên (với Tab: bảng và lịch tuần)
+│   │   └── StudentDashboardPage.jsx    // Giao diện dashboard dành cho Sinh viên (với Tab: bảng và lịch tuần)
+│   ├── routes/
+│   │   └── AppRouter.jsx         // Định tuyến chính của ứng dụng
+│   ├── App.jsx                   // Thành phần gốc, gói AppRouter và ConfigProvider
+│   ├── index.js                  // Điểm khởi đầu của ứng dụng React
+│   └── reportWebVitals.js        // (Optional)
+├── .eslintrc.js                  // Cấu hình ESLint
+├── package.json                  // Quản lý dependencies và script
+└── README.md                     // Hướng dẫn dự án (file này)
 ```
 
-## Triển Khai
+---
 
-Do dự án sử dụng cấu trúc monorepo theo kiểu Client-Server, phần **client** sẽ được triển khai độc lập, gửi request đến backend thông qua API. Bạn có thể tích hợp với các công cụ CI/CD để cập nhật và build tự động.
+## Công nghệ sử dụng
 
-## Contributing
+- **React** – Thư viện xây dựng giao diện người dùng.
+- **React Router Dom** – Quản lý định tuyến và điều hướng.
+- **Ant Design (antd)** – Thư viện UI hiện đại, cung cấp các thành phần Layout, Form, Button, Table, Calendar, v.v.
+- **Axios** – Xử lý các yêu cầu HTTP (ví dụ: upload file).
+- **Moment** – Xử lý và định dạng ngày giờ.
+- **Phông chữ Inter** – Được import từ Google Fonts giúp giao diện hiện đại và rõ ràng.
 
-Nếu bạn muốn đóng góp vào dự án, hãy fork repository, tạo pull request và đảm bảo tuân thủ các quy tắc về code, format và kiểm thử.
+---
 
-## License
+## Hướng dẫn cài đặt và chạy dự án
 
-Dự án SmartExam được cấp phép theo giấy phép MIT (hoặc ghi chú theo license của dự án).
-```
+1. **Clone dự án:**
+
+   ```bash
+   git clone <REPOSITORY_URL>
+   cd SmartExam/client
+   ```
+
+2. **Cài đặt các phụ thuộc:**
+
+   ```bash
+   npm install
+   ```
+
+3. **Khởi động ứng dụng:**
+
+   ```bash
+   npm start
+   ```
+
+4. **Truy cập ứng dụng trên trình duyệt tại:**
+
+   ```
+   http://localhost:3000
+   ```
+
+---
+
+## Các Route chính
+
+- **/login:**  
+  Trang đăng nhập với logo hiển thị phía trên form đăng nhập. Dữ liệu đăng nhập sẵn cho 3 vai trò: Admin, Giảng viên và Sinh viên.
+
+- **Admin Routes:**  
+  - **/home:** Giao diện dashboard tổng quan cho Admin (DashboardPage).
+  - **/schedule:** Trang tạo lịch thi tự động (SchedulePage) được nhúng vào DashboardPage.
+  - **/import:** Trang nhập dữ liệu (ImportPage) được nhúng vào DashboardPage.
+  - **/search:** Trang tra cứu lịch thi (SearchPage) được nhúng vào DashboardPage, hiển thị kết quả dưới dạng bảng, lịch tháng và lịch tuần.
+
+- **Teacher Route:**  
+  **/teacher** – Giao diện dashboard dành cho Giảng viên (TeacherDashboardPage), hiển thị lịch thi dưới dạng bảng và lịch tuần.
+
+- **Student Route:**  
+  **/student** – Giao diện dashboard dành cho Sinh viên (StudentDashboardPage), hiển thị lịch thi dưới dạng bảng và lịch tuần.
+
+---
+
+## Tích hợp API
+
+Hiện tại, phần dữ liệu sử dụng là dummy data để mô phỏng kết quả tìm kiếm, xếp lịch thi, nhập dữ liệu, …  
+Khi API của server đã sẵn sàng, bạn cần cập nhật:
+- **Xác thực đăng nhập**
+- **Upload dữ liệu từ ImportPage**
+- **Xếp lịch thi tự động từ SchedulePage**
+- **Tra cứu lịch thi từ SearchPage**
+- **Lịch thực tế cho Giảng viên và Sinh viên**
+
+---
+
+## Kết luận
+
+Phần client của SmartExam React Client đã hoàn thiện với các giao diện đăng nhập, dashboard cho Admin, giảng viên và sinh viên, cùng với các chức năng tạo lịch thi, nhập dữ liệu và tra cứu lịch thi được xây dựng bằng Ant Design.  
+Giao diện được thiết kế hiện đại, sử dụng phông chữ "Inter" và toàn bộ văn bản tiếng Việt, giúp dễ dàng tích hợp với API của server khi backend sẵn sàng.
+
+Nếu có bất kỳ câu hỏi hay yêu cầu bổ sung nào, vui lòng liên hệ với nhóm phát triển. Chúc bạn thành công với dự án SmartExam!
+
+---
