@@ -82,7 +82,7 @@ SmartExam/
 1. **Clone dự án:**
 
    ```bash
-   git clone <REPOSITORY_URL>
+   git clone https://github.com/duongnv12/SmartExam.git
    cd SmartExam/client
    ```
 
